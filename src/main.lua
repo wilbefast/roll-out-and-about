@@ -37,6 +37,13 @@ function clear()
 	white()
 end
 
+function clearAlpha()
+ 	love.graphics.setColor(0, 0, 0, 0)
+ 		rekt("fill", 0, 0, 500, 500)
+	white()
+end
+
+
 
 -------------------------------------------------------------------------------
 -- GLOBALS
@@ -59,15 +66,12 @@ end
 local screenScale = 1
 local palette
 
--- truck
-local truck
-local x, y = 100, 100
-
 -------------------------------------------------------------------------------
 -- INCLUDES
 -------------------------------------------------------------------------------
 local skyline_back = require("skyline_back")
 local skyline_front = require("skyline_front")
+local truck = require("truck")
 
 -------------------------------------------------------------------------------
 -- LOVE CALLBACKS
@@ -114,41 +118,34 @@ function love.load()
 	}
 
 	-- game objects
-	truck = love.graphics.newImage("truck.png")
+	truck.load()
 	skyline_back.load()
 	skyline_front.load()
 end
 
 
 function love.draw()
-	-- snap position to nearest 8
-	snap_x, snap_y = math.floor(x/8)*8, math.floor(y/8)*8
-
 	-- clear workspace
-	for i = 1, 1 do
-		inColourCanvas(i)
-		clear()
-		inAlphaCanvas(i)
-		clear()
+	for i = 1, 2 do
+		colourCanvas[i]:clear()
+		alphaCanvas[i]:clear()
 	end
 
-	-- colour 1
-	inColourCanvas(1)
- 	blue()
- 	rekt("fill", snap_x - 40, snap_y - 24, 80, 48)
-
-	-- alpha 1
-	inAlphaCanvas(1)
- 	draw(truck, x, y, 0, 1, 1, 32, 16)
+	-- truck
+	truck.draw()
 
  	-- skyline
 	skyline_back.draw()
 	skyline_front.draw()
 
+
+
 	-- render border to screen
 	canvas(screenCanvas)
-	clear()
+	clearAlpha()
  	rekt("fill", 0, 0, W, H)
+ 	love.graphics.setColor(math.random(255), math.random(255), math.random(255))
+ 	rekt("fill", (W - w)*0.5, (H - h)*0.5, w, h)
 
  	-- collapse colour/alpha into screen
  	for i = 1, 2 do
@@ -166,114 +163,12 @@ function love.draw()
  	canvas(nil)
  	clear()
 	draw(screenCanvas, gw*0.5, gh*0.5, 0, screenScale, screenScale, W*0.5, H*0.5)
-
-
-
---[[
-
- 	-- prepare alpha canvases
-	love.graphics.setCanvas(alphaCanvas)
-
-	 	black()
-	 	love.graphics.rectangle("fill", 0, 0, w, h)
-
-	 	white()
-			
-			skyline_back.draw()
-
-			love.graphics.rectangle("fill", 0, 71, w, 1)
-
-			love.graphics.setColor(0, 192, 192)
-				love.graphics.rectangle("fill", 0, 72, w, 72)
-			white()
-
-			love.graphics.rectangle("fill", 0, 144, w, 2)
-
-			love.graphics.draw(truck, x, y, r, 1, 1, 32, 16)
-
-			skyline_front.draw()
-		white()
-
-	love.graphics.setCanvas(nil)
-
- 	-- combine colour and alpha
- 	for i = 1, 2 do
-
-
- 	end
-
-
-	-- render border
-	love.graphics.setCanvas(screenCanvas)
-	love.graphics.setBlendMode("alpha")
- 	love.graphics.rectangle("fill", 0, 0, W, H)
-
-
-
-
-
- 	
-
- 	love.graphics.push()
-	white()
- 	love.graphics.translate(W*0.5, H*0.5)
-			
-			
-		love.graphics.setBlendMode("alpha")
-		white()
-		love.graphics.setShader(shader)
-			love.graphics.draw(colourCanvas, 0, 0, 0, 8, 8, w/16, h/16)
-		love.graphics.setShader(nil)
-
-
-
-
-		love.graphics.setBlendMode("multiplicative")
-		white()
-			love.graphics.draw(alphaCanvas, 0, 0, 0, 1, 1, w/2, h/2)
-
-	love.graphics.pop()
- 	love.graphics.setCanvas(nil)
-
- 	-- render to the screen 	
- 	love.graphics.setBlendMode("alpha")
- 	love.graphics.draw(screenCanvas, gw*0.5, gh*0.5, 0, scale, scale, W*0.5, H*0.5)
-
-
-
-]]
-
-
 end
 
 function love.update(dt)
-
-	-- keyboard
-	local kx, ky = 0, 0
-	if love.keyboard.isDown("left") then
-		kx = kx - 1
-	end
-	if love.keyboard.isDown("right") then
-		kx = kx + 1
-	end
-	if love.keyboard.isDown("up") then
-		ky = ky - 1
-	end
-	if love.keyboard.isDown("down") then
-		ky = ky + 1
-	end
-
-	-- parallax
 	skyline_back.update(dt)
 	skyline_front.update(dt)
-
-	-- move avatar
-	x, y = x + 128*kx*dt, y + 128*ky*dt
-	if x < 32 then x = 32 end
-	if x > 96 then x = 96 end
-	if y < 88 then y = 88 end
-	if y > 128 then y = 128 end
-
+	truck.update(dt)
 end
 
 function love.keypressed(key)

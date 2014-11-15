@@ -5,7 +5,7 @@ local w
 local skyline_back = {
 
 	load = function()
-		img = love.graphics.newImage("skyline_back.png")
+		img = love.graphics.newImage("assets/skyline_back.png")
 		w = img:getWidth()
 	end,
 	

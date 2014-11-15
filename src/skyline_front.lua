@@ -1,17 +1,17 @@
-local x = 0
+local x, snap_x = 0, 0
 local img
 local w, h
 
 local skyline_front = {
 
 	load = function()
-		img = love.graphics.newImage("skyline_front.png")
+		img = love.graphics.newImage("assets/skyline_front.png")
 		w = img:getWidth()
 		h = img:getHeight()
 	end,
 	
 	draw = function()
-		local snap_x = math.floor(x/8)*8
+
 
 		inAlphaCanvas(1)
 		draw(img, snap_x, 192 - h)
@@ -27,6 +27,7 @@ local skyline_front = {
 		if x < -w then
 			x = 0
 		end
+		snap_x = math.floor(x/8)*8
 	end
 }
 
