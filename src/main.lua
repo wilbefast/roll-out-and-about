@@ -66,12 +66,21 @@ end
 local screenScale = 1
 local palette
 
+-- gameplay
+local timer = 3
+local road_top = 72
+local road_width = 80
+
 -------------------------------------------------------------------------------
 -- INCLUDES
 -------------------------------------------------------------------------------
 local skyline_back = require("skyline_back")
 local skyline_front = require("skyline_front")
 local truck = require("truck")
+
+Class = require("hump/class")
+GameObject = require("unrequited/GameObject")
+local Bomb
 
 -------------------------------------------------------------------------------
 -- LOVE CALLBACKS
@@ -118,6 +127,7 @@ function love.load()
 	}
 
 	-- game objects
+	Bomb = require("Bomb")
 	truck.load()
 	skyline_back.load()
 	skyline_front.load()
@@ -147,11 +157,15 @@ function love.draw()
 		rekt(0, 64, w, 8)
 	-- ... tarmac
 	inColourCanvas(1)
-		darkTeal()
-		rekt(0, 72, w, 80)
+		darkRed()
+		rekt(0, road_top, w, road_width)
 	--... bottom border
 	inColourCanvas(1)
-		rekt(0, 152, w, 8)
+		rekt(0, road_top + road_width, w, 8)
+
+
+	-- enemies
+	GameObject.drawAll()
 
 	-- truck
 	truck.draw()
@@ -189,6 +203,17 @@ function love.update(dt)
 	skyline_back.update(dt)
 	skyline_front.update(dt)
 	truck.update(dt)
+
+
+	GameObject.updateAll(dt)
+
+	timer = timer -dt
+	if timer <= 0 then
+		timer = 1
+
+		Bomb(w, road_top + 8 + math.random(road_width - 16))
+	end
+
 end
 
 function love.keypressed(key)

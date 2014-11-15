@@ -12,7 +12,7 @@ local truck = {
 	
 	draw = function()
 		inColourCanvas(2)
-	 	blue()
+	 	darkBlue()
 	 	rekt(snap_x - 40, snap_y - 24, 80, 48)
 
 		inAlphaCanvas(2)
