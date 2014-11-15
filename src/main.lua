@@ -6,7 +6,6 @@ local zxCanvas
 local alphaCanvas
 local colourCanvas
 local shader
-local lena
 local truck
 local truck_alpha
 local zxScale = 1
@@ -22,7 +21,6 @@ function love.load()
 
 
 	love.graphics.setDefaultFilter("nearest", "nearest", 1)
-	lena = love.graphics.newImage("lena.jpg")
 	truck = love.graphics.newImage("truck.png")
 	truck_alpha = love.graphics.newImage("truck_alpha.png")
 
@@ -61,24 +59,11 @@ function white() love.graphics.setColor(255, 255, 255, 255) end
 function black() love.graphics.setColor(0, 0, 0, 255) end
 
 function love.draw()
+
 	-- reset
 	love.graphics.setBlendMode("alpha")
 	love.graphics.origin()
 	white()
-
-	-- prepare colour canvas
-	love.graphics.setCanvas(colourCanvas)
-	love.graphics.push()
-	love.graphics.scale(1/8, 1/8)
-
-	 	black()
-	 	love.graphics.rectangle("fill", 0, 0, w, h)
-
-		white()
-		love.graphics.draw(truck, x, y, r, 1, 1, 32, 16)
-
-	love.graphics.pop()
- 	love.graphics.setCanvas(nil)
 
  	-- prepare alpha canvas
 	love.graphics.setCanvas(alphaCanvas)
@@ -98,17 +83,11 @@ function love.draw()
  	
 
  	love.graphics.push()
+	white()
  	love.graphics.translate(W*0.5, H*0.5)
 			
 		love.graphics.setBlendMode("alpha")
-		white()
-		love.graphics.setShader(shader)
-			love.graphics.draw(colourCanvas, 0, 0, 0, 8, 8, w/16, h/16)
-		love.graphics.setShader(nil)
-
-		love.graphics.setBlendMode("multiplicative")
-		white()
-			love.graphics.draw(alphaCanvas, 0, 0, 0, 1, 1, w/2, h/2)
+		love.graphics.draw(alphaCanvas, 0, 0, 0, 1, 1, w/2, h/2)
 
 	love.graphics.pop()
  	love.graphics.setCanvas(nil)
@@ -120,8 +99,6 @@ function love.draw()
 end
 
 function love.update(dt)
-
-	--r = r + dt
 
 	-- keyboard
 	local kx, ky = 0, 0
@@ -138,8 +115,21 @@ function love.update(dt)
 		ky = ky + 1
 	end
 
+	-- turn avatar
+	-- if kx > 0 then
+	-- 	r = math.pi/4
+	-- elseif kx < 0 then
+	-- 	r = -math.pi/4
+	-- else
+	-- 	r = 0
+	-- end
+
 	-- move avatar
 	x, y = x + 128*kx*dt, y + 128*ky*dt
+	if x < 32 then x = 32 end
+	if x > 96 then x = 96 end
+	if y < 100 then y = 100 end
+	if y > 170 then y = 170 end
 
 end
 
