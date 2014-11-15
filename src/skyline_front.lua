@@ -13,8 +13,13 @@ local skyline_front = {
 	draw = function()
 		local snap_x = math.floor(x/8)*8
 
-		love.graphics.draw(img, snap_x, 192 - h)
-		love.graphics.draw(img, snap_x + w, 192 - h)
+		inAlphaCanvas(1)
+		draw(img, snap_x, 192 - h)
+		draw(img, snap_x + w, 192 - h)
+
+		inColourCanvas(1)
+		darkRed()
+		rekt("fill", 0, 192 - h, w, h)
 	end,
 
 	update = function(dt)

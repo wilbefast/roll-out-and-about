@@ -1,53 +1,178 @@
+-------------------------------------------------------------------------------
+-- UTILITY FUNCTIONS
+-------------------------------------------------------------------------------
+function draw(img, x, y, r, sx, sy, ox, oy) love.graphics.draw(img, x, y, r, sx, sy, ox, oy) end
+function rekt(m, x, y, w, h) love.graphics.rectangle(m, x, y, w, h) end
+function scale(k) love.graphics.scale(k, k) end
+function shader(s) love.graphics.setShader(s) end
+function origin() love.graphics.origin() end
+function mode(m) love.graphics.setBlendMode(m or "alpha") end
+function white() love.graphics.setColor(255, 255, 255, 255) end
+function black() love.graphics.setColor(0, 0, 0, 255) end
+function yellow() love.graphics.setColor(255, 255, 0, 255) end
+function blue() love.graphics.setColor(0, 0, 255, 255) end
+function red() love.graphics.setColor(255, 0, 0, 255) end
+function teal() love.graphics.setColor(0, 255, 255, 255) end
+function violet() love.graphics.setColor(255, 0, 255, 255) end
+function green() love.graphics.setColor(0, 255, 0, 255) end
+function darkYellow() love.graphics.setColor(192, 192, 0, 255) end
+function darkBlue() love.graphics.setColor(0, 0, 192, 255) end
+function darkRed() love.graphics.setColor(192, 0, 0, 255) end
+function darkTeal() love.graphics.setColor(0, 192, 192, 255) end
+function darkViolet() love.graphics.setColor(192, 0, 192, 255) end
+function darkGreen() love.graphics.setColor(0, 192, 0, 255) end
+function reset()
+	white()
+	origin()
+	mode("alpha")
+	shader(nil)
+end
+function canvas(c) 
+	love.graphics.setCanvas(c) 
+	reset() 
+end
+function clear()
+ 	black()
+ 		rekt("fill", 0, 0, 500, 500)
+	white()
+end
+
+
+-------------------------------------------------------------------------------
+-- GLOBALS
+-------------------------------------------------------------------------------
+
+-- display
 local W, H = 384, 288
-local w, h = 256, 192
+w, h = 256, 192
 local gw, gh
-
 local screenCanvas
-local gameCanvas
-local truck
-local scale = 1
+local alphaCanvas = {}
+local colourCanvas = {}
+function inAlphaCanvas(i) 
+	canvas(alphaCanvas[i])
+end
+function inColourCanvas(i) 
+	canvas(colourCanvas[i])
+	scale(1/8)
+end
+local screenScale = 1
+local palette
 
+-- truck
+local truck
+local x, y = 100, 100
+
+-------------------------------------------------------------------------------
+-- INCLUDES
+-------------------------------------------------------------------------------
 local skyline_back = require("skyline_back")
 local skyline_front = require("skyline_front")
 
+-------------------------------------------------------------------------------
+-- LOVE CALLBACKS
+-------------------------------------------------------------------------------
 function love.load()
 
+	-- setup graphics
 	gw, gh = love.graphics.getWidth(), love.graphics.getHeight()
-
-	while (W*scale < gw) and (H*scale < gh) do
-		scale = scale + 0.1
+	while (W*screenScale < gw) and (H*screenScale < gh) do
+		screenScale = screenScale + 0.1
 	end
-	scale = scale - 0.1
-
+	screenScale = screenScale - 0.1
 	love.graphics.setDefaultFilter("nearest", "nearest", 1)
-	truck = love.graphics.newImage("truck.png")
-
 	love.mouse.setVisible(false)
 
-	screenCanvas = love.graphics.newCanvas(W, H) 
-	gameCanvas = love.graphics.newCanvas(w, h)
+	-- palette shader
+	palette = love.graphics.newShader("zx.fs")
+	palette:send("colors", 
+		{1, 1, 1, 1},  
+		{1, 1, 1, 1},
+		{1, 0, 0, 1},
+		{0, 1, 0, 1},
+		{0, 0, 1, 1},
+		{1, 1, 0, 1},
+		{0, 1, 1, 1},
+		{1, 0, 1, 1},
+		{0.8, 0.8, 0.8, 1},
+		{0.8, 0, 0, 1},
+		{0, 0.8, 0, 1},
+		{0, 0, 0.8, 1},
+		{0.8, 0.8, 0, 1},
+		{0, 0.8, 0.8, 1},
+		{0.8, 0, 0.8, 1})
 
+	-- canvases
+	screenCanvas = love.graphics.newCanvas(W, H)
+	alphaCanvas = {
+		love.graphics.newCanvas(w, h),
+		love.graphics.newCanvas(w, h)
+	}
+	colourCanvas = {
+		love.graphics.newCanvas(w/8, h/8),
+		love.graphics.newCanvas(w/8, h/8)
+	}
 
+	-- game objects
+	truck = love.graphics.newImage("truck.png")
 	skyline_back.load()
 	skyline_front.load()
 end
 
-local x, y = 100, 100
-
-local r = 0
-
-function white() love.graphics.setColor(255, 255, 255, 255) end
-function black() love.graphics.setColor(0, 0, 0, 255) end
 
 function love.draw()
+	-- snap position to nearest 8
+	snap_x, snap_y = math.floor(x/8)*8, math.floor(y/8)*8
 
-	-- reset
-	love.graphics.setBlendMode("alpha")
-	love.graphics.origin()
-	white()
+	-- clear workspace
+	for i = 1, 1 do
+		inColourCanvas(i)
+		clear()
+		inAlphaCanvas(i)
+		clear()
+	end
 
- 	-- prepare alpha canvas
-	love.graphics.setCanvas(gameCanvas)
+	-- colour 1
+	inColourCanvas(1)
+ 	blue()
+ 	rekt("fill", snap_x - 40, snap_y - 24, 80, 48)
+
+	-- alpha 1
+	inAlphaCanvas(1)
+ 	draw(truck, x, y, 0, 1, 1, 32, 16)
+
+ 	-- skyline
+	skyline_back.draw()
+	skyline_front.draw()
+
+	-- render border to screen
+	canvas(screenCanvas)
+	clear()
+ 	rekt("fill", 0, 0, W, H)
+
+ 	-- collapse colour/alpha into screen
+ 	for i = 1, 2 do
+ 		canvas(alphaCanvas[i])
+ 		mode("multiplicative")
+ 		shader(palette)
+ 		draw(colourCanvas[i], 0, 0, 0, 8, 8)
+
+ 		canvas(screenCanvas)
+ 		love.graphics.translate((W - w)*0.5, (H - h)*0.5)
+ 		draw(alphaCanvas[i])
+ 	end
+
+ 	-- finalise
+ 	canvas(nil)
+ 	clear()
+	draw(screenCanvas, gw*0.5, gh*0.5, 0, screenScale, screenScale, W*0.5, H*0.5)
+
+
+
+--[[
+
+ 	-- prepare alpha canvases
+	love.graphics.setCanvas(alphaCanvas)
 
 	 	black()
 	 	love.graphics.rectangle("fill", 0, 0, w, h)
@@ -71,18 +196,41 @@ function love.draw()
 
 	love.graphics.setCanvas(nil)
 
+ 	-- combine colour and alpha
+ 	for i = 1, 2 do
+
+
+ 	end
+
+
 	-- render border
 	love.graphics.setCanvas(screenCanvas)
 	love.graphics.setBlendMode("alpha")
  	love.graphics.rectangle("fill", 0, 0, W, H)
+
+
+
+
+
  	
 
  	love.graphics.push()
 	white()
  	love.graphics.translate(W*0.5, H*0.5)
 			
+			
 		love.graphics.setBlendMode("alpha")
-		love.graphics.draw(gameCanvas, 0, 0, 0, 1, 1, w/2, h/2)
+		white()
+		love.graphics.setShader(shader)
+			love.graphics.draw(colourCanvas, 0, 0, 0, 8, 8, w/16, h/16)
+		love.graphics.setShader(nil)
+
+
+
+
+		love.graphics.setBlendMode("multiplicative")
+		white()
+			love.graphics.draw(alphaCanvas, 0, 0, 0, 1, 1, w/2, h/2)
 
 	love.graphics.pop()
  	love.graphics.setCanvas(nil)
@@ -90,6 +238,11 @@ function love.draw()
  	-- render to the screen 	
  	love.graphics.setBlendMode("alpha")
  	love.graphics.draw(screenCanvas, gw*0.5, gh*0.5, 0, scale, scale, W*0.5, H*0.5)
+
+
+
+]]
+
 
 end
 
@@ -113,15 +266,6 @@ function love.update(dt)
 	-- parallax
 	skyline_back.update(dt)
 	skyline_front.update(dt)
-
-	-- turn avatar
-	-- if kx > 0 then
-	-- 	r = math.pi/4
-	-- elseif kx < 0 then
-	-- 	r = -math.pi/4
-	-- else
-	-- 	r = 0
-	-- end
 
 	-- move avatar
 	x, y = x + 128*kx*dt, y + 128*ky*dt

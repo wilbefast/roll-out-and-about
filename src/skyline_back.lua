@@ -10,8 +10,13 @@ local skyline_back = {
 	end,
 	
 	draw = function() 
-		love.graphics.draw(img, x, 0)
-		love.graphics.draw(img, x + w, 0)
+		inAlphaCanvas(1)
+		draw(img, x, 0)
+		draw(img, x + w, 0)
+
+		inColourCanvas(1)
+		darkBlue()
+		rekt("fill", 0, 0, w, h)	
 	end,
 
 	update = function(dt)
