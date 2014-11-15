@@ -8,6 +8,7 @@ local colourCanvas
 local shader
 local lena
 local truck
+local truck_alpha
 local zxScale = 1
 
 function love.load()
@@ -23,6 +24,7 @@ function love.load()
 	love.graphics.setDefaultFilter("nearest", "nearest", 1)
 	lena = love.graphics.newImage("lena.jpg")
 	truck = love.graphics.newImage("truck.png")
+	truck_alpha = love.graphics.newImage("truck_alpha.png")
 
 	love.mouse.setVisible(false)
 
@@ -66,9 +68,16 @@ function love.draw()
 
 	-- prepare colour canvas
 	love.graphics.setCanvas(colourCanvas)
+	love.graphics.push()
+	love.graphics.scale(1/8, 1/8)
 
-		love.graphics.draw(lena, 0, 0, 0, 1/8, 1/8)
+	 	black()
+	 	love.graphics.rectangle("fill", 0, 0, w, h)
 
+		white()
+		love.graphics.draw(truck, x, y, r, 1, 1, 32, 16)
+
+	love.graphics.pop()
  	love.graphics.setCanvas(nil)
 
  	-- prepare alpha canvas
@@ -78,7 +87,7 @@ function love.draw()
 	 	love.graphics.rectangle("fill", 0, 0, w, h)
 
 		white()
-		love.graphics.draw(truck, x, y, r, 1, 1, 32, 16)
+		love.graphics.draw(truck_alpha, x, y, r, 1, 1, 32, 16)
 
 	love.graphics.setCanvas(nil)
 
@@ -112,7 +121,7 @@ end
 
 function love.update(dt)
 
-	r = r + dt
+	--r = r + dt
 
 	-- keyboard
 	local kx, ky = 0, 0
