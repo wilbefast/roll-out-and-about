@@ -17,7 +17,7 @@ local skyline_front = {
 			draw(img, snap_x + w, 192 - h)
 
 		inColourCanvas(2)
-			darkRed()
+			darkViolet()
 			rekt(0, 192 - h*0.5, w, h)
 	end,
 

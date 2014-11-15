@@ -13,7 +13,7 @@ local truck = {
 	draw = function()
 		inColourCanvas(2)
 	 	darkBlue()
-	 	rekt(snap_x - 40, snap_y - 24, 80, 48)
+	 	rekt(snap_x - 40, snap_y - 16, 80, 37)
 
 		inAlphaCanvas(2)
 	 	draw(img, x, y, 0, 1, 1, 32, 16)
@@ -38,7 +38,7 @@ local truck = {
 		if x < 32 then x = 32 end
 		if x > 96 then x = 96 end
 		if y < 88 then y = 88 end
-		if y > 136 then y = 136 end
+		if y > 134 then y = 134 end
 
 		-- snap position to nearest 8
 		snap_x, snap_y = math.floor(x/8)*8, math.floor(y/8)*8

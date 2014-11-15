@@ -153,6 +153,9 @@ function love.draw()
 
 	-- road
 	-- ... top border
+	inAlphaCanvas(2)
+		rekt(0, 71, w, 1)
+	inColourCanvas(2)
 		white()
 		rekt(0, 64, w, 8)
 	-- ... tarmac
@@ -160,7 +163,9 @@ function love.draw()
 		darkRed()
 		rekt(0, road_top, w, road_width)
 	--... bottom border
-	inColourCanvas(1)
+	inAlphaCanvas(2)
+		rekt(0, road_top + road_width, w, 2)
+	inColourCanvas(2)
 		rekt(0, road_top + road_width, w, 8)
 
 

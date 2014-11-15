@@ -19,7 +19,7 @@ Game loop
 function Bomb:draw(x, y)
   inColourCanvas(2)
   darkYellow()
-  rekt(self.snap_x - 16, self.snap_y - 16, 32, 32)
+  rekt(self.snap_x - 16, self.snap_y - 8, 32, 24)
 
   inAlphaCanvas(2)
   draw(self.img, self.x, self.y, 0, 1, 1, 8, 8)
