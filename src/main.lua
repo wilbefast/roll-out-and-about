@@ -1,5 +1,6 @@
 local W, H = 384, 288
 local w, h = 256, 192
+local gw, gh
 
 local zxCanvas
 local alphaCanvas
@@ -7,8 +8,17 @@ local colourCanvas
 local shader
 local lena
 local truck
+local zxScale = 1
 
 function love.load()
+
+	gw, gh = love.graphics.getWidth(), love.graphics.getHeight()
+
+	while (W*zxScale < gw) and (H*zxScale < gh) do
+		zxScale = zxScale + 0.1
+	end
+	zxScale = zxScale - 0.1
+
 
 	love.graphics.setDefaultFilter("nearest", "nearest", 1)
 	lena = love.graphics.newImage("lena.jpg")
@@ -96,13 +106,13 @@ function love.draw()
 
  	-- render to the screen 	
  	love.graphics.setBlendMode("alpha")
- 	love.graphics.draw(zxCanvas)
+ 	love.graphics.draw(zxCanvas, gw*0.5, gh*0.5, 0, zxScale, zxScale, W*0.5, H*0.5)
 
 end
 
 function love.update(dt)
 
-	r = r + dt*4
+	r = r + dt
 
 	-- keyboard
 	local kx, ky = 0, 0
