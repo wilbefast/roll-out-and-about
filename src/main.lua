@@ -2,53 +2,34 @@ local W, H = 384, 288
 local w, h = 256, 192
 local gw, gh
 
-local zxCanvas
-local alphaCanvas
-local colourCanvas
-local shader
+local screenCanvas
+local gameCanvas
 local truck
-local truck_alpha
-local zxScale = 1
+local scale = 1
+
+local skyline_back = require("skyline_back")
+local skyline_front = require("skyline_front")
 
 function love.load()
 
 	gw, gh = love.graphics.getWidth(), love.graphics.getHeight()
 
-	while (W*zxScale < gw) and (H*zxScale < gh) do
-		zxScale = zxScale + 0.1
+	while (W*scale < gw) and (H*scale < gh) do
+		scale = scale + 0.1
 	end
-	zxScale = zxScale - 0.1
-
+	scale = scale - 0.1
 
 	love.graphics.setDefaultFilter("nearest", "nearest", 1)
 	truck = love.graphics.newImage("truck.png")
-	truck_alpha = love.graphics.newImage("truck_alpha.png")
 
 	love.mouse.setVisible(false)
 
-	zxCanvas = love.graphics.newCanvas(W, H) 
+	screenCanvas = love.graphics.newCanvas(W, H) 
+	gameCanvas = love.graphics.newCanvas(w, h)
 
-	colourCanvas = love.graphics.newCanvas(w/8, h/8)
 
-	alphaCanvas = love.graphics.newCanvas(w, h)
-
-	shader = love.graphics.newShader("zx.fs")
-	shader:send("colors", 
-		{1, 1, 1, 1},  
-		{1, 1, 1, 1},
-		{1, 0, 0, 1},
-		{0, 1, 0, 1},
-		{0, 0, 1, 1},
-		{1, 1, 0, 1},
-		{0, 1, 1, 1},
-		{1, 0, 1, 1},
-		{0.8, 0.8, 0.8, 1},
-		{0.8, 0, 0, 1},
-		{0, 0.8, 0, 1},
-		{0, 0, 0.8, 1},
-		{0.8, 0.8, 0, 1},
-		{0, 0.8, 0.8, 1},
-		{0.8, 0, 0.8, 1})
+	skyline_back.load()
+	skyline_front.load()
 end
 
 local x, y = 100, 100
@@ -66,18 +47,32 @@ function love.draw()
 	white()
 
  	-- prepare alpha canvas
-	love.graphics.setCanvas(alphaCanvas)
+	love.graphics.setCanvas(gameCanvas)
 
 	 	black()
 	 	love.graphics.rectangle("fill", 0, 0, w, h)
 
+	 	white()
+			
+			skyline_back.draw()
+
+			love.graphics.rectangle("fill", 0, 71, w, 1)
+
+			love.graphics.setColor(0, 192, 192)
+				love.graphics.rectangle("fill", 0, 72, w, 72)
+			white()
+
+			love.graphics.rectangle("fill", 0, 144, w, 2)
+
+			love.graphics.draw(truck, x, y, r, 1, 1, 32, 16)
+
+			skyline_front.draw()
 		white()
-		love.graphics.draw(truck_alpha, x, y, r, 1, 1, 32, 16)
 
 	love.graphics.setCanvas(nil)
 
 	-- render border
-	love.graphics.setCanvas(zxCanvas)
+	love.graphics.setCanvas(screenCanvas)
 	love.graphics.setBlendMode("alpha")
  	love.graphics.rectangle("fill", 0, 0, W, H)
  	
@@ -87,14 +82,14 @@ function love.draw()
  	love.graphics.translate(W*0.5, H*0.5)
 			
 		love.graphics.setBlendMode("alpha")
-		love.graphics.draw(alphaCanvas, 0, 0, 0, 1, 1, w/2, h/2)
+		love.graphics.draw(gameCanvas, 0, 0, 0, 1, 1, w/2, h/2)
 
 	love.graphics.pop()
  	love.graphics.setCanvas(nil)
 
  	-- render to the screen 	
  	love.graphics.setBlendMode("alpha")
- 	love.graphics.draw(zxCanvas, gw*0.5, gh*0.5, 0, zxScale, zxScale, W*0.5, H*0.5)
+ 	love.graphics.draw(screenCanvas, gw*0.5, gh*0.5, 0, scale, scale, W*0.5, H*0.5)
 
 end
 
@@ -115,6 +110,10 @@ function love.update(dt)
 		ky = ky + 1
 	end
 
+	-- parallax
+	skyline_back.update(dt)
+	skyline_front.update(dt)
+
 	-- turn avatar
 	-- if kx > 0 then
 	-- 	r = math.pi/4
@@ -128,8 +127,8 @@ function love.update(dt)
 	x, y = x + 128*kx*dt, y + 128*ky*dt
 	if x < 32 then x = 32 end
 	if x > 96 then x = 96 end
-	if y < 100 then y = 100 end
-	if y > 170 then y = 170 end
+	if y < 88 then y = 88 end
+	if y > 128 then y = 128 end
 
 end
 
