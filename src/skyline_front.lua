@@ -6,20 +6,19 @@ local skyline_front = {
 
 	load = function()
 		img = love.graphics.newImage("assets/skyline_front.png")
-		w = img:getWidth()
-		h = img:getHeight()
+		w, h = img:getWidth(), img:getHeight()
 	end,
 	
 	draw = function()
 
 
-		inAlphaCanvas(1)
-		draw(img, snap_x, 192 - h)
-		draw(img, snap_x + w, 192 - h)
+		inAlphaCanvas(2)
+			draw(img, snap_x, 192 - h)
+			draw(img, snap_x + w, 192 - h)
 
-		inColourCanvas(1)
-		darkRed()
-		rekt("fill", 0, 192 - h, w, h)
+		inColourCanvas(2)
+			darkRed()
+			rekt(0, 192 - h*0.5, w, h)
 	end,
 
 	update = function(dt)

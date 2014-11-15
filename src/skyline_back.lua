@@ -1,22 +1,34 @@
 local x = 0
 local img
-local w
+local w, h
 
 local skyline_back = {
 
+	h = function()
+		return h
+	end,
+
 	load = function()
 		img = love.graphics.newImage("assets/skyline_back.png")
-		w = img:getWidth()
+		w, h = img:getWidth(), img:getHeight()
 	end,
 	
 	draw = function() 
-		inAlphaCanvas(1)
+		inAlphaCanvas(2)
 		draw(img, x, 0)
 		draw(img, x + w, 0)
 
-		inColourCanvas(1)
+		inColourCanvas(2)
 		darkBlue()
-		rekt("fill", 0, 0, w, h)	
+		rekt(0, 0, w, h)
+
+		inAlphaCanvas(1)
+		black()
+		rekt(0, 0, w, h)
+
+		inColourCanvas(1)
+		rekt(0, 0, w, h)
+
 	end,
 
 	update = function(dt)

@@ -92,9 +92,6 @@ int getClosest(vec4 c, vec2 coord){
 	float mindist = 10000;
 	int i;
 
-    if(c == vec4(0.0, 0.0, 0.0, 1.0))
-        return 0;
-
 	for (i = 0; i < 15; ++i)
 	{
 		float dist = dist32(c, colors[i]);

@@ -2,7 +2,7 @@
 -- UTILITY FUNCTIONS
 -------------------------------------------------------------------------------
 function draw(img, x, y, r, sx, sy, ox, oy) love.graphics.draw(img, x, y, r, sx, sy, ox, oy) end
-function rekt(m, x, y, w, h) love.graphics.rectangle(m, x, y, w, h) end
+function rekt(x, y, w, h) love.graphics.rectangle("fill", x, y, w, h) end
 function scale(k) love.graphics.scale(k, k) end
 function shader(s) love.graphics.setShader(s) end
 function origin() love.graphics.origin() end
@@ -33,13 +33,13 @@ function canvas(c)
 end
 function clear()
  	black()
- 		rekt("fill", 0, 0, 500, 500)
+ 		rekt(0, 0, 500, 500)
 	white()
 end
 
 function clearAlpha()
  	love.graphics.setColor(0, 0, 0, 0)
- 		rekt("fill", 0, 0, 500, 500)
+ 		rekt(0, 0, 500, 500)
 	white()
 end
 
@@ -90,7 +90,7 @@ function love.load()
 	-- palette shader
 	palette = love.graphics.newShader("zx.fs")
 	palette:send("colors", 
-		{1, 1, 1, 1},  
+		{0, 0, 0, 1},  
 		{1, 1, 1, 1},
 		{1, 0, 0, 1},
 		{0, 1, 0, 1},
@@ -131,21 +131,40 @@ function love.draw()
 		alphaCanvas[i]:clear()
 	end
 
+ 	-- background
+	inAlphaCanvas(1)
+		rekt(0, 0, w, h)
+	skyline_back.draw()
+
+	local y = skyline_back.h()
+	inColourCanvas(1)
+		black()
+		rekt(0, y, w, 32)
+
+	-- road
+	-- ... top border
+		white()
+		rekt(0, 64, w, 8)
+	-- ... tarmac
+	inColourCanvas(1)
+		darkTeal()
+		rekt(0, 72, w, 80)
+	--... bottom border
+	inColourCanvas(1)
+		rekt(0, 152, w, 8)
+
 	-- truck
 	truck.draw()
 
- 	-- skyline
-	skyline_back.draw()
+	-- foreground
 	skyline_front.draw()
-
-
 
 	-- render border to screen
 	canvas(screenCanvas)
 	clearAlpha()
- 	rekt("fill", 0, 0, W, H)
+ 	rekt(0, 0, W, H)
  	love.graphics.setColor(math.random(255), math.random(255), math.random(255))
- 	rekt("fill", (W - w)*0.5, (H - h)*0.5, w, h)
+ 	rekt((W - w)*0.5, (H - h)*0.5, w, h)
 
  	-- collapse colour/alpha into screen
  	for i = 1, 2 do
@@ -163,6 +182,7 @@ function love.draw()
  	canvas(nil)
  	clear()
 	draw(screenCanvas, gw*0.5, gh*0.5, 0, screenScale, screenScale, W*0.5, H*0.5)
+	--draw(colourCanvas[1])
 end
 
 function love.update(dt)
