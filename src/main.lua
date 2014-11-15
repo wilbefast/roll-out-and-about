@@ -1,17 +1,22 @@
 local W, H = 384, 288
 local w, h = 256, 192
 
+local zxCanvas
 local alphaCanvas
 local colourCanvas
 local shader
 local lena
+local truck
 
 function love.load()
 
 	love.graphics.setDefaultFilter("nearest", "nearest", 1)
 	lena = love.graphics.newImage("lena.jpg")
+	truck = love.graphics.newImage("truck.png")
 
 	love.mouse.setVisible(false)
+
+	zxCanvas = love.graphics.newCanvas(W, H) 
 
 	colourCanvas = love.graphics.newCanvas(w/8, h/8)
 
@@ -38,6 +43,8 @@ end
 
 local x, y = 100, 100
 
+local r = 0
+
 function white() love.graphics.setColor(255, 255, 255, 255) end
 function black() love.graphics.setColor(0, 0, 0, 255) end
 
@@ -50,7 +57,6 @@ function love.draw()
 	-- prepare colour canvas
 	love.graphics.setCanvas(colourCanvas)
 
-		love.graphics.setColor(255, 255, 255, 255)
 		love.graphics.draw(lena, 0, 0, 0, 1/8, 1/8)
 
  	love.graphics.setCanvas(nil)
@@ -58,32 +64,45 @@ function love.draw()
  	-- prepare alpha canvas
 	love.graphics.setCanvas(alphaCanvas)
 
-		 love.graphics.setColor(0, 0, 0, 255)
-		 love.graphics.rectangle("fill", 0, 0, w, h)
-		love.graphics.setColor(255, 255, 255, 255)
-		love.graphics.rectangle("fill", x - 50, y - 50, 100, 100)
+	 	black()
+	 	love.graphics.rectangle("fill", 0, 0, w, h)
+
+		white()
+		love.graphics.draw(truck, x, y, r, 1, 1, 32, 16)
 
 	love.graphics.setCanvas(nil)
 
+	-- render border
+	love.graphics.setCanvas(zxCanvas)
+	love.graphics.setBlendMode("alpha")
+ 	love.graphics.rectangle("fill", 0, 0, W, H)
+ 	
 
- 	-- render to the screen
  	love.graphics.push()
- 	love.graphics.translate((W - w)*0.5, (H - h)*0.5)
+ 	love.graphics.translate(W*0.5, H*0.5)
 			
 		love.graphics.setBlendMode("alpha")
 		white()
 		love.graphics.setShader(shader)
-			love.graphics.draw(colourCanvas, 0, 0, 0, 8, 8)
+			love.graphics.draw(colourCanvas, 0, 0, 0, 8, 8, w/16, h/16)
 		love.graphics.setShader(nil)
 
 		love.graphics.setBlendMode("multiplicative")
-			love.graphics.draw(alphaCanvas, 0, 0, 0, 1, 1)
+		white()
+			love.graphics.draw(alphaCanvas, 0, 0, 0, 1, 1, w/2, h/2)
 
 	love.graphics.pop()
+ 	love.graphics.setCanvas(nil)
+
+ 	-- render to the screen 	
+ 	love.graphics.setBlendMode("alpha")
+ 	love.graphics.draw(zxCanvas)
 
 end
 
 function love.update(dt)
+
+	r = r + dt*4
 
 	-- keyboard
 	local kx, ky = 0, 0
