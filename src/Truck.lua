@@ -1,11 +1,13 @@
 local x, y, snap_x, snap_y = 0, 0, 0, 0
-local img
+local img, img2
 local w, h
+local t = 0
 
 local truck = {
 
 	load = function()
 		img = love.graphics.newImage("assets/truck.png")
+		img2 = love.graphics.newImage("assets/truck2.png")
 		w = img:getWidth()
 		h = img:getHeight()
 	end,
@@ -16,7 +18,11 @@ local truck = {
 	 	rekt(snap_x - 40, snap_y - 16, 80, 37)
 
 		inAlphaCanvas(2)
-	 	draw(img, x, y, 0, 1, 1, 32, 16)
+		if t > 1 then
+	 		draw(img, x, y, 0, 1, 1, 32, 16)
+	 	else
+	 		draw(img2, x, y, 0, 1, 1, 32, 16)
+	 	end
 	end,
 
 	update = function(dt)
@@ -42,6 +48,11 @@ local truck = {
 
 		-- snap position to nearest 8
 		snap_x, snap_y = math.floor(x/8)*8, math.floor(y/8)*8
+
+		t = t + dt*10
+		if t > 2 then
+			t = 0
+		end
 	end
 }
 

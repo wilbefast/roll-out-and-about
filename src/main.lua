@@ -66,8 +66,14 @@ end
 local screenScale = 1
 local palette
 
+-- font
+local font
+local blackAndWhite
+
 -- gameplay
 local timer = 3
+function decimals(x) local n = 1 while x >= 10 do x = math.floor(x/10) n = n + 1 end return n end
+score = 0
 local road_top = 72
 local road_width = 80
 
@@ -76,7 +82,7 @@ local road_width = 80
 -------------------------------------------------------------------------------
 local skyline_back = require("skyline_back")
 local skyline_front = require("skyline_front")
-local truck = require("truck")
+local Truck = require("Truck")
 
 Class = require("hump/class")
 GameObject = require("unrequited/GameObject")
@@ -126,9 +132,15 @@ function love.load()
 		love.graphics.newCanvas(w/8, h/8)
 	}
 
+	-- font
+	font = love.graphics.newFont("assets/transformers.ttf", 12)
+	font:setFilter("nearest", "nearest", 1)
+	love.graphics.setFont(font)
+	blackAndWhite = love.graphics.newShader("bw.fs")
+
 	-- game objects
 	Bomb = require("Bomb")
-	truck.load()
+	Truck.load()
 	skyline_back.load()
 	skyline_front.load()
 end
@@ -172,8 +184,8 @@ function love.draw()
 	-- enemies
 	GameObject.drawAll()
 
-	-- truck
-	truck.draw()
+	-- Truck
+	Truck.draw()
 
 	-- foreground
 	skyline_front.draw()
@@ -197,17 +209,24 @@ function love.draw()
  		draw(alphaCanvas[i])
  	end
 
+ 	-- write score
+ 	canvas(screenCanvas)
+ 	love.graphics.translate((W - w)*0.5, (H - h)*0.5)
+ 	darkTeal()
+ 		rekt(8, 8, 48 + 8*decimals(score), 12)
+ 	shader(blackAndWhite)
+ 		love.graphics.print("Score: " .. score, 10, 10)
+
  	-- finalise
  	canvas(nil)
  	clear()
 	draw(screenCanvas, gw*0.5, gh*0.5, 0, screenScale, screenScale, W*0.5, H*0.5)
-	--draw(colourCanvas[1])
 end
 
 function love.update(dt)
 	skyline_back.update(dt)
 	skyline_front.update(dt)
-	truck.update(dt)
+	Truck.update(dt)
 
 
 	GameObject.updateAll(dt)

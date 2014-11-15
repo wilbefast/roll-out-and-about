@@ -22,13 +22,18 @@ function Bomb:draw(x, y)
   rekt(self.snap_x - 16, self.snap_y - 8, 32, 24)
 
   inAlphaCanvas(2)
-  draw(self.img, self.x, self.y, 0, 1, 1, 8, 8)
+  local r = -(math.pi/4) * math.floor(self.t)
+  draw(self.img, self.x, self.y - math.sin(r)*4, r, 1, 1, 8, 8)
 end
 
 function Bomb:update(dt)
+
+  self.t = (self.t or 0) + 10*dt
+
   self.x = self.x - 256*dt
   if self.x < -100 then
     self.purge = true
+    score = score + 1
   end
 
   -- snap position to nearest 8
