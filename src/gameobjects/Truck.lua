@@ -6,8 +6,8 @@ local Truck = Class
 {
   type = GameObject.newType("Truck"),
 
-	img = love.graphics.newImage("assets/truck.png"),
-	img2 = love.graphics.newImage("assets/truck2.png"),
+	img = love.graphics.newImage("assets/truck_0.png"),
+	img2 = love.graphics.newImage("assets/truck_1.png"),
 	layer = 1,
 	lives = 3,
 
