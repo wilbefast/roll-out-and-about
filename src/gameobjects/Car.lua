@@ -34,7 +34,7 @@ Game loop
 
 function Car:draw()
   local r = -(math.pi/4) * math.floor(self.t)
-  local x, y = self.x, self.y - self.h - math.sin(r)*2
+  local x, y = self.x, self.y - math.sin(r)*2
   local snap_x, snap_y = math.floor(x/8)*8, math.floor(y/8)*8
 
   inColourCanvas(2)
@@ -47,7 +47,7 @@ function Car:draw()
 
   inAlphaCanvas(2)
   
-  draw(self.img, x, y, 0, 1, 1, 8, 8)
+  draw(self.img, x, y, 0, 1, 1, 16, 16)
 end
 
 function Car:update(dt)

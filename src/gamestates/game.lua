@@ -34,8 +34,13 @@ Callbacks
 function state:keypressed(key, uni)
   if key=="escape" then
     gamestate.switch(title)
-  elseif (key==" ") and (gameover_timer < 3) then
-    gamestate.switch(gameover)
+  elseif (key==" ") then
+  	local truck = GameObject.getObjectOfType("Truck")
+  	if truck then
+  		truck:transform()
+  	elseif (gameover_timer < 2) then
+    	gamestate.switch(gameover)
+    end
   end
 
 end
