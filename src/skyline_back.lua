@@ -1,6 +1,9 @@
 local x = 0
 local img
+local img_lights
 local w, h
+
+local lights_x = 0
 
 local skyline_back = {
 
@@ -10,6 +13,7 @@ local skyline_back = {
 
 	load = function()
 		img = love.graphics.newImage("assets/skyline_back.png")
+		img_lights = love.graphics.newImage("assets/streetlights_back.png")
 		w, h = img:getWidth(), img:getHeight()
 	end,
 	
@@ -29,6 +33,14 @@ local skyline_back = {
 		inColourCanvas(1)
 		rekt(0, 0, w, h)
 
+
+		-- street lights
+		inAlphaCanvas(2)
+			draw(img_lights, lights_x, h + 16)
+			draw(img_lights, lights_x + w, h + 16)
+		inColourCanvas(2)
+			grey()
+			rekt(0, h + 16, w, 16)
 	end,
 
 	update = function(dt)
@@ -36,6 +48,12 @@ local skyline_back = {
 		if x < -w then
 			x = 0
 		end
+
+		lights_x = lights_x - dt*144
+		if lights_x < -w then
+			lights_x = 0
+		end
+
 	end
 }
 

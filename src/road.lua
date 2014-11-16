@@ -12,7 +12,7 @@ local road = {
 		inAlphaCanvas(2)
 			rekt(0, 71, w, 1)
 		inColourCanvas(2)
-			white()
+			grey()
 			rekt(0, 64, w, 8)
 		-- tarmac
 		inColourCanvas(1)
@@ -26,6 +26,7 @@ local road = {
 		inAlphaCanvas(2)
 			rekt(0, top + width, w, 2)
 		inColourCanvas(2)
+			blue()
 			rekt(0, top + width, w, 8)
 
 	end
