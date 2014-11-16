@@ -1,6 +1,6 @@
 local w, h
 
-local top, bottom, left, right = 96, 134, 32, 96
+local top, bottom, left, right = 96, 134, 32, 170
 
 local Truck = Class
 {
@@ -34,7 +34,7 @@ function Truck:draw()
  	else
  		darkBlue()
  	end
- 	rekt(snap_x - 40, snap_y - 16, 80, 37)
+ 	rekt(snap_x - 40, snap_y - 12, 80, 35)
 
 	inAlphaCanvas(2)
 	if self.t > 1 then
