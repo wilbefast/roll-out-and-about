@@ -45,7 +45,9 @@ function Bomb:update(dt)
   self.x = self.x - 256*dt
   if self.x < -100 then
     self.purge = true
-    score = score + 1
+    if GameObject.getObjectOfType("Truck") then
+      score = score + 1
+    end
   end
 end
 

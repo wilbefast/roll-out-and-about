@@ -72,23 +72,28 @@ local font
 local blackAndWhite
 
 -- gameplay
-local timer = 3
 function decimals(x) local n = 1 while x >= 10 do x = math.floor(x/10) n = n + 1 end return n end
 score = 0
-local road_top = 72
-local road_width = 80
 
 -------------------------------------------------------------------------------
 -- INCLUDES
 -------------------------------------------------------------------------------
-local skyline_back = require("skyline_back")
-local skyline_front = require("skyline_front")
 
 Class = require("hump/class")
+gamestate = require("hump/gamestate")
+
 GameObject = require("unrequited/GameObject")
+audio = require("unrequited/audio")
+
+skyline_back = require("skyline_back")
+skyline_front = require("skyline_front")
+road = require("road")
+
 ExplodeParticle = require("gameobjects/ExplodeParticle")
 
-audio = require("unrequited/audio")
+title = require("gamestates/title")
+game = require("gamestates/game")
+gameover = require("gamestates/gameover")
 
 -------------------------------------------------------------------------------
 -- LOVE CALLBACKS
@@ -150,7 +155,9 @@ function love.load()
 	skyline_back.load()
 	skyline_front.load()
 
-	Truck(0, 0)
+  -- go to the initial gamestate
+  gamestate.switch(game)
+
 end
 
 
@@ -161,53 +168,32 @@ function love.draw()
 		alphaCanvas[i]:clear()
 	end
 
- 	-- background
-	inAlphaCanvas(1)
-		rekt(0, 0, w, h)
-	skyline_back.draw()
-
-	local y = skyline_back.h()
-	inColourCanvas(1)
-		black()
-		rekt(0, y, w, 32)
-
-	-- road
-	-- ... top border
-	inAlphaCanvas(2)
-		rekt(0, 71, w, 1)
-	inColourCanvas(2)
-		white()
-		rekt(0, 64, w, 8)
-	-- ... tarmac
-	inColourCanvas(1)
-	if Bomb.BOOM > 0 then
-		violet()
-	else
-		darkRed()
-	end
-		rekt(0, road_top, w, road_width)
-	--... bottom border
-	inAlphaCanvas(2)
-		rekt(0, road_top + road_width, w, 2)
-	inColourCanvas(2)
-		rekt(0, road_top + road_width, w, 8)
-
-
-	-- enemies
-	GameObject.drawAll()
-
-	-- foreground
-	skyline_front.draw()
+	-- redraw
+	gamestate.draw()
 
 	-- render border to screen
 	canvas(screenCanvas)
 	clearAlpha()
 	if Bomb.BOOM > 0 then
- 		white()
+ 		grey()
  	else
- 		black()
+ 		local t = GameObject.getObjectOfType("Truck")
+ 		if not t then
+ 			darkViolet()
+ 		else
+	 		local l = t.lives
+	 		if l == 1 then
+	 			darkRed()
+	 		elseif l == 2 then
+	 			darkYellow()
+ 			elseif l == 3 then
+ 				darkGreen()
+ 			end
+ 		end
  	end
 	rekt(0, 0, W, H)
+
+	-- render random colours behind the screen so we can spot any pixels we've forgotten to draw
  	love.graphics.setColor(math.random(255), math.random(255), math.random(255))
  	rekt((W - w)*0.5, (H - h)*0.5, w, h)
 
@@ -226,9 +212,10 @@ function love.draw()
  	-- write score
  	canvas(screenCanvas)
  	love.graphics.translate((W - w)*0.5, (H - h)*0.5)
- 	darkTeal()
+ 	teal()
  		rekt(8, 8, 48 + 8*decimals(score), 12)
  	shader(blackAndWhite)
+
  		love.graphics.print("Score: " .. score, 10, 10)
 
  	-- finalise
@@ -241,14 +228,7 @@ function love.update(dt)
 	skyline_back.update(dt)
 	skyline_front.update(dt)
 
-	GameObject.updateAll(dt)
-
-	timer = timer -dt
-	if timer <= 0 then
-		timer = 1
-
-		Bomb(w, road_top + 8 + math.random(road_width - 16))
-	end
+	gamestate.update(dt)
 
 	Bomb.BOOM = math.max(0, Bomb.BOOM - 4*dt)
 

@@ -9,7 +9,7 @@ local Truck = Class
 	img = love.graphics.newImage("assets/truck.png"),
 	img2 = love.graphics.newImage("assets/truck2.png"),
 	layer = 1,
-	lives = 4,
+	lives = 3,
 
   init = function(self, x, y)
     GameObject.init(self, x, y, 16, 8)
@@ -25,7 +25,6 @@ Game loop
 --]]--
 
 function Truck:draw()
-
 	local x, y = self.x, self.y - self.h
 	local snap_x, snap_y = math.floor(x/8)*8, math.floor(y/8)*8
 
