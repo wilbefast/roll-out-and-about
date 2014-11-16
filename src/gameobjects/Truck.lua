@@ -29,7 +29,7 @@ function Truck:draw()
 	local snap_x, snap_y = math.floor(x/8)*8, math.floor(y/8)*8
 
 	inColourCanvas(2)
-	if Bomb.BOOM > 0 then
+	if BOOM > 0 then
  		white()
  	else
  		darkBlue()
@@ -72,7 +72,7 @@ function Truck:update(dt)
 end
 
 function Truck:eventCollision(other)
-	if other:isType("Bomb") then
+	if other:isType("Car") then
 		other:explode()
 		self.lives = self.lives - 1
 		if self.lives == 0 then

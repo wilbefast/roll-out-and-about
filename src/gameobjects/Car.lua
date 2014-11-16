@@ -1,11 +1,10 @@
 local top, bottom = 96, 134
 
-local Bomb = Class
+local Car = Class
 {
-  type = GameObject.newType("Bomb"),
+  type = GameObject.newType("Car"),
 
-  img = love.graphics.newImage("assets/mine.png"),
-  img_face = love.graphics.newImage("assets/mine_face.png"),
+  img = love.graphics.newImage("assets/car.png"),
   layer = 0,
 
   init = function(self, x, y)
@@ -17,32 +16,31 @@ local Bomb = Class
 
   BOOM = 0
 }
-Bomb:include(GameObject)
+Car:include(GameObject)
 
 --[[------------------------------------------------------------
 Game loop
 --]]--
 
-function Bomb:draw()
+function Car:draw()
   local r = -(math.pi/4) * math.floor(self.t)
-  local x, y = self.x, self.y + self.h - math.sin(r)*4
+  local x, y = self.x, self.y + self.h - math.sin(r)*2
   local snap_x, snap_y = math.floor(x/8)*8, math.floor(y/8)*8
 
   inColourCanvas(2)
-  if Bomb.BOOM > 0 then
+  if Car.BOOM > 0 then
     yellow()
   else
     darkYellow()
   end
-  rekt(snap_x - 20, snap_y - 12, 40, 32)
+  rekt(snap_x - 20, snap_y - 12, 64, 32)
 
   inAlphaCanvas(2)
   
-  draw(self.img, x, y, r, 1, 1, 8, 8)
-  draw(self.img_face, x, y, 0, 1, 1, 8, 8)
+  draw(self.img, x, y, 0, 1, 1, 8, 8)
 end
 
-function Bomb:update(dt)
+function Car:update(dt)
 
   self.t = self.t + 10*dt
 
@@ -55,7 +53,7 @@ function Bomb:update(dt)
   end
 end
 
-function Bomb:explode()
+function Car:explode()
   audio:play_sound("explode")
   self.purge = true
   for i = 1, 30 do
@@ -63,7 +61,7 @@ function Bomb:explode()
     local dx = math.cos(a)
     local dy = math.sin(a)
     ExplodeParticle(self.x, self.y, dx, dy)
-    Bomb.BOOM = 1
+    Car.BOOM = 1
   end
 end
 
@@ -73,4 +71,4 @@ Export
 --]]--
 
 
-return Bomb
+return Car

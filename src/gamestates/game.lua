@@ -66,12 +66,12 @@ function state:update(dt)
 
 		spawn_timer = 3/(1 + wave*0.1)
 
-		Bomb(w, road.top() + 8 + math.random(road.width() - 16))
+		Car(w, road.top() + 8 + math.random(road.width() - 16))
 	end
 
 	-- set border colour
 	local c = white
-	if Bomb.BOOM > 0 then
+	if BOOM > 0 then
  		c = grey
  	else
  		if not truck then
@@ -90,7 +90,7 @@ function state:update(dt)
  	border.setColour(c) 
 
  	-- boom!
-	Bomb.BOOM = math.max(0, Bomb.BOOM - 4*dt)
+	BOOM = math.max(0, BOOM - 4*dt)
 end
 
 function state:draw()

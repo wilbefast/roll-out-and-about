@@ -16,7 +16,7 @@ local road = {
 			rekt(0, 64, w, 8)
 		-- tarmac
 		inColourCanvas(1)
-		if Bomb.BOOM > 0 then
+		if BOOM > 0 then
 			violet()
 		else
 			darkRed()

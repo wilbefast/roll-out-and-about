@@ -79,6 +79,7 @@ blackAndWhite = nil
 -- gameplay
 function decimals(x) local n = 1 while x >= 10 do x = math.floor(x/10) n = n + 1 end return n end
 score = 0
+BOOM = 0
 
 -------------------------------------------------------------------------------
 -- INCLUDES
@@ -162,7 +163,7 @@ function love.load()
 
 	-- game objects
 	ExplodeParticle.load()
-	Bomb = require("gameobjects/Bomb")
+	Car = require("gameobjects/Car")
 	Truck = require("gameobjects/Truck")
 	skyline_back.load()
 	skyline_front.load()
