@@ -90,6 +90,7 @@ gamestate = require("hump/gamestate")
 
 GameObject = require("unrequited/GameObject")
 audio = require("unrequited/audio")
+useful = require("unrequited/useful")
 
 border = require("border")
 skyline_back = require("skyline_back")
@@ -161,12 +162,13 @@ function love.load()
 	-- sound
 	audio:load_sound("explode", 1, 1)
 	audio:load_music("transformers")
-	--audio:play_music("transformers")
+	audio:play_music("transformers")
 
 	-- game objects
 	ExplodeParticle.load()
 	Car = require("gameobjects/Car")
 	Truck = require("gameobjects/Truck")
+	Copter = require("gameobjects/Copter")
 	skyline_back.load()
 	skyline_front.load()
 

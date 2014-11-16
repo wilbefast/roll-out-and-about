@@ -23,7 +23,7 @@ local Car = Class
     GameObject.init(self, x, y, 9, 9)
     self.t = 0
 
-    self.dx = -300 + math.random()*100
+    self.dx = -300 + math.random()*200
     self.dy = math.random()*32 -math.random()*32
 
     self.colour = math.floor(math.random()*3) + 1
@@ -62,7 +62,7 @@ function Car:update(dt)
   if self.x < -100 then
     self.purge = true
     if GameObject.getObjectOfType("Truck") then
-      score = score + 1
+      score = score + 2
     end
   end
 
