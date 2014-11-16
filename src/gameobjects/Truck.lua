@@ -31,7 +31,7 @@ function Truck:draw()
 
 	inColourCanvas(2)
 	if Bomb.BOOM > 0 then
- 		teal()
+ 		white()
  	else
  		darkBlue()
  	end

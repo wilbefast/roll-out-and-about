@@ -1,12 +1,16 @@
+local top, bottom = 96, 134
 
 local Bomb = Class
 {
   type = GameObject.newType("Bomb"),
 
   img = love.graphics.newImage("assets/mine.png"),
+  img_face = love.graphics.newImage("assets/mine_face.png"),
   layer = 0,
 
   init = function(self, x, y)
+    if y < top then y = top end
+    if y > bottom then y = bottom end
     GameObject.init(self, x, y, 6, 6)
     self.t = 0
   end,
@@ -31,6 +35,7 @@ function Bomb:draw()
   inAlphaCanvas(2)
   
   draw(self.img, x, y, r, 1, 1, 8, 8)
+  draw(self.img_face, x, y, 0, 1, 1, 8, 8)
 end
 
 function Bomb:update(dt)
@@ -45,8 +50,9 @@ function Bomb:update(dt)
 end
 
 function Bomb:explode()
+  audio:play_sound("explode")
   self.purge = true
-  for i = 1, 10 do
+  for i = 1, 30 do
     local a = math.random()*math.pi*2
     local dx = math.cos(a)
     local dy = math.sin(a)

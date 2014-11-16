@@ -21,6 +21,7 @@ function darkRed() love.graphics.setColor(192, 0, 0, 255) end
 function darkTeal() love.graphics.setColor(0, 192, 192, 255) end
 function darkViolet() love.graphics.setColor(192, 0, 192, 255) end
 function darkGreen() love.graphics.setColor(0, 192, 0, 255) end
+function grey() love.graphics.setColor(192, 192, 192, 255) end
 function reset()
 	white()
 	origin()
@@ -87,6 +88,8 @@ Class = require("hump/class")
 GameObject = require("unrequited/GameObject")
 ExplodeParticle = require("gameobjects/ExplodeParticle")
 
+audio = require("unrequited/audio")
+
 -------------------------------------------------------------------------------
 -- LOVE CALLBACKS
 -------------------------------------------------------------------------------
@@ -137,7 +140,11 @@ function love.load()
 	love.graphics.setFont(font)
 	blackAndWhite = love.graphics.newShader("bw.fs")
 
+	-- sound
+	audio:load_sound("explode", 1, 1)
+
 	-- game objects
+	ExplodeParticle.load()
 	Bomb = require("gameobjects/Bomb")
 	Truck = require("gameobjects/Truck")
 	skyline_back.load()
