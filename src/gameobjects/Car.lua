@@ -1,4 +1,4 @@
-local top, bottom = 96, 134
+local top, bottom = 104, 152
 
 local coloursLight = { yellow, yellow, yellow }
 local coloursDark = { darkYellow, darkYellow, darkYellow }
@@ -15,6 +15,9 @@ local Car = Class
   layer = 0,
 
   init = function(self, x, y)
+
+    y = top + math.random(bottom - top)
+
     if y < top then y = top end
     if y > bottom then y = bottom end
     GameObject.init(self, x, y, 9, 9)
@@ -63,7 +66,7 @@ function Car:update(dt)
     end
   end
 
-  local t, b = road.top() + 32, road.top() + road.width() - 32
+  local t, b = road.top(), road.top() + road.width()
   if self.y < t then
     self.y = t
     self.dy = -self.dy

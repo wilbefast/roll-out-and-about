@@ -17,6 +17,11 @@ local Truck = Class
 
 	attack_img = love.graphics.newImage("assets/robot_attack.png"),
 
+	robot_img = {
+		love.graphics.newImage("assets/robot_walk_0.png"),
+		love.graphics.newImage("assets/robot_walk_1.png")
+	},
+
 	layer = 1,
 	lives = 3,
 
@@ -70,8 +75,15 @@ function Truck:draw()
 	else
 		local frame = math.min(#self.trans_img, math.floor(self.transformation*#self.trans_img) + 1)
 		inAlphaCanvas(2)
-		draw(self.trans_img[frame], x, y, 0, 1, 1, 32, 64)
-
+		if self.transformation == 1 then
+		if self.t > 1 then
+	 		draw(self.robot_img[1], x, y, 0, 1, 1, 32, 64)
+	 	else
+	 		draw(self.robot_img[2], x, y, 0, 1, 1, 32, 64)
+	 	end
+		else
+			draw(self.trans_img[frame], x, y, 0, 1, 1, 32, 64)
+		end
 
 		-- robot sword
 		if self.attack > 0 then
