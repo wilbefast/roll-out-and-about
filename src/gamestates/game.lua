@@ -4,7 +4,7 @@ local state = gamestate.new()
 Constants
 --]]--
 
-local spawn_timer, gameover_timer, difficulty
+local spawn_timer, gameover_timer, difficulty, heli_timer
 
 --[[------------------------------------------------------------
 Gamestate navigation
@@ -19,8 +19,9 @@ function state:enter()
 	spawn_timer = 3
 	gameover_timer = 3
 	Truck(0, 0)
-	Copter()
 	wave = 0
+	spawn_timer = 10
+	heli_timer = 20
 end
 
 
@@ -64,7 +65,7 @@ function state:update(dt)
 		end
 	end
 
-	-- spawn enemies
+	-- spawn cars
 	spawn_timer = spawn_timer -dt
 	if spawn_timer <= 0 then
 
@@ -73,6 +74,16 @@ function state:update(dt)
 		spawn_timer = 3/(1 + wave*0.1)
 
 		Car(w, road.top() + 8 + math.random(road.width() - 16))
+	end
+
+	-- respawn heli
+	if not GameObject.getObjectOfType("Copter") then
+		heli_timer = heli_timer - dt
+		if heli_timer <= 0 then
+			Copter()
+		end
+	else
+		heli_timer = 10/(1 + wave*0.05)
 	end
 
 	-- set border colour
