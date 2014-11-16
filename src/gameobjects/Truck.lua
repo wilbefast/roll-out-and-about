@@ -149,7 +149,7 @@ end
 function Truck:eventCollision(other)
 	if other:isType("Car") then
 		other:explode()
-		if self.transformation ~= 1 then
+		if (self.transformation ~= 1) or (self.attack > 0) then
 			self.lives = self.lives - 1
 			if self.lives == 0 then
 				self.purge = true

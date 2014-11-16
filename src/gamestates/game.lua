@@ -67,7 +67,8 @@ function state:update(dt)
 
 	-- spawn cars
 	spawn_timer = spawn_timer -dt
-	if spawn_timer <= 0 then
+	if (spawn_timer <= 0) 
+	and (GameObject.countOfTypeSuchThat("Car", function() return true end) < 20) then
 
 		wave = wave + 1
 
