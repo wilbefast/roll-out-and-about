@@ -82,11 +82,10 @@ local road_width = 80
 -------------------------------------------------------------------------------
 local skyline_back = require("skyline_back")
 local skyline_front = require("skyline_front")
-local Truck = require("Truck")
 
 Class = require("hump/class")
 GameObject = require("unrequited/GameObject")
-local Bomb
+ExplodeParticle = require("gameobjects/ExplodeParticle")
 
 -------------------------------------------------------------------------------
 -- LOVE CALLBACKS
@@ -139,10 +138,12 @@ function love.load()
 	blackAndWhite = love.graphics.newShader("bw.fs")
 
 	-- game objects
-	Bomb = require("Bomb")
-	Truck.load()
+	Bomb = require("gameobjects/Bomb")
+	Truck = require("gameobjects/Truck")
 	skyline_back.load()
 	skyline_front.load()
+
+	Truck(0, 0)
 end
 
 
@@ -172,7 +173,11 @@ function love.draw()
 		rekt(0, 64, w, 8)
 	-- ... tarmac
 	inColourCanvas(1)
+	if Bomb.BOOM > 0 then
+		violet()
+	else
 		darkRed()
+	end
 		rekt(0, road_top, w, road_width)
 	--... bottom border
 	inAlphaCanvas(2)
@@ -184,16 +189,18 @@ function love.draw()
 	-- enemies
 	GameObject.drawAll()
 
-	-- Truck
-	Truck.draw()
-
 	-- foreground
 	skyline_front.draw()
 
 	-- render border to screen
 	canvas(screenCanvas)
 	clearAlpha()
- 	rekt(0, 0, W, H)
+	if Bomb.BOOM > 0 then
+ 		white()
+ 	else
+ 		black()
+ 	end
+	rekt(0, 0, W, H)
  	love.graphics.setColor(math.random(255), math.random(255), math.random(255))
  	rekt((W - w)*0.5, (H - h)*0.5, w, h)
 
@@ -226,8 +233,6 @@ end
 function love.update(dt)
 	skyline_back.update(dt)
 	skyline_front.update(dt)
-	Truck.update(dt)
-
 
 	GameObject.updateAll(dt)
 
@@ -237,6 +242,8 @@ function love.update(dt)
 
 		Bomb(w, road_top + 8 + math.random(road_width - 16))
 	end
+
+	Bomb.BOOM = math.max(0, Bomb.BOOM - 4*dt)
 
 end
 
