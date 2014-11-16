@@ -51,12 +51,15 @@ end
 -------------------------------------------------------------------------------
 
 -- display
-local W, H = 384, 288
+W, H = 384, 288
 w, h = 256, 192
 local gw, gh
 local screenCanvas
 local alphaCanvas = {}
 local colourCanvas = {}
+function inScreenCanvas()
+	canvas(screenCanvas)
+end
 function inAlphaCanvas(i) 
 	canvas(alphaCanvas[i])
 end
@@ -85,6 +88,7 @@ gamestate = require("hump/gamestate")
 GameObject = require("unrequited/GameObject")
 audio = require("unrequited/audio")
 
+border = require("border")
 skyline_back = require("skyline_back")
 skyline_front = require("skyline_front")
 road = require("road")
@@ -172,26 +176,7 @@ function love.draw()
 	gamestate.draw()
 
 	-- render border to screen
-	canvas(screenCanvas)
-	clearAlpha()
-	if Bomb.BOOM > 0 then
- 		grey()
- 	else
- 		local t = GameObject.getObjectOfType("Truck")
- 		if not t then
- 			darkViolet()
- 		else
-	 		local l = t.lives
-	 		if l == 1 then
-	 			darkRed()
-	 		elseif l == 2 then
-	 			darkYellow()
- 			elseif l == 3 then
- 				darkGreen()
- 			end
- 		end
- 	end
-	rekt(0, 0, W, H)
+	border.draw()
 
 	-- render random colours behind the screen so we can spot any pixels we've forgotten to draw
  	love.graphics.setColor(math.random(255), math.random(255), math.random(255))
@@ -225,17 +210,9 @@ function love.draw()
 end
 
 function love.update(dt)
-	skyline_back.update(dt)
-	skyline_front.update(dt)
-
 	gamestate.update(dt)
-
-	Bomb.BOOM = math.max(0, Bomb.BOOM - 4*dt)
-
 end
 
 function love.keypressed(key)
- if key == "escape" then
-  love.event.quit()
- end
+	gamestate.keypressed(key)
 end

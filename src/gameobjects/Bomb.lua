@@ -30,7 +30,7 @@ function Bomb:draw()
 
   inColourCanvas(2)
   darkYellow()
-  rekt(snap_x - 16, snap_y - 8, 32, 24)
+  rekt(snap_x - 20, snap_y - 12, 40, 32)
 
   inAlphaCanvas(2)
   
