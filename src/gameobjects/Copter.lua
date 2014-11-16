@@ -5,7 +5,7 @@ local Copter = Class
   type = GameObject.newType("Copter"),
 
   img = love.graphics.newImage("assets/copter.png"),
-  layer = 0,
+  layer = 1,
 
   init = function(self, x, y)
 

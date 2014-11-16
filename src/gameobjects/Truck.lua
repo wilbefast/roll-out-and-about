@@ -22,7 +22,7 @@ local Truck = Class
 		love.graphics.newImage("assets/robot_walk_1.png")
 	},
 
-	layer = 1,
+	layer = 2,
 	lives = 3,
 
   init = function(self, x, y)
@@ -162,7 +162,6 @@ function Truck:eventCollision(other)
 
 
 	elseif other:isType("Bomb") then
-		print("HIT BY A BOMB")
 		other:explode()
 		self.lives = self.lives - 1
 		if self.lives == 0 then

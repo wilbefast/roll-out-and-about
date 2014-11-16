@@ -4,7 +4,7 @@ local Bomb = Class
   type = GameObject.newType("Bomb"),
   img = love.graphics.newImage("assets/bomb.png"),
 
-  layer = 2,
+  layer = 0,
 
   init = function(self, x, y)
     GameObject.init(self, x, y, 32, 32)
@@ -25,7 +25,7 @@ function Bomb:draw()
 
   inColourCanvas(2)
   teal()
-  rekt(snap_x, snap_y - 8, 16, 24)
+  rekt(snap_x - 8, snap_y - 8, 32, 24)
 
   inAlphaCanvas(2)
   draw(self.img, x, y, 0, 1, 1, 4, 4)

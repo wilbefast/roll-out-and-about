@@ -19,7 +19,6 @@ function state:enter()
 	spawn_timer = 3
 	gameover_timer = 3
 	Truck(0, 0)
-	Copter()
 	wave = 0
 	spawn_timer = 10
 	heli_timer = 20
@@ -84,7 +83,7 @@ function state:update(dt)
 			Copter()
 		end
 	else
-		heli_timer = 10/(1 + wave*0.05)
+		heli_timer = 30/(1 + wave*0.05)
 	end
 
 	-- set border colour
