@@ -14,7 +14,9 @@ local Copter = Class
     if y < top then y = top end
     if y > bottom then y = bottom end
     GameObject.init(self, x, y)
+
     self.t = 0
+    self.bomb_timer = 1
 
     self.x = 0
     self.dx = useful.iSignedRand()*(12 + math.random()*4)
@@ -54,6 +56,17 @@ function Copter:update(dt)
   GameObject.update(self, dt)
 
   self.t = self.t + 10*dt
+
+  self.bomb_timer = self.bomb_timer - dt
+  if self.bomb_timer <= 0 then
+    Bomb(self.x, self.y)
+    self.bomb_timer = 2
+  end
+
+  if (self.x > w + 32) or (self.x < - 32) then
+    self.purge = true
+    score = score + 10
+  end
 
 end
 

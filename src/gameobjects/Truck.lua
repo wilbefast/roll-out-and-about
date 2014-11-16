@@ -1,6 +1,6 @@
 local w, h
 
-local top, bottom, left, right = 104, 152, 32, 170
+local top, bottom, left, right = 104, 152, 32, 230
 
 local Truck = Class
 {
@@ -159,7 +159,19 @@ function Truck:eventCollision(other)
 			self.attack = 1
 			score = score + 1
 		end
+
+
+	elseif other:isType("Bomb") then
+		print("HIT BY A BOMB")
+		other:explode()
+		self.lives = self.lives - 1
+		if self.lives == 0 then
+			self.purge = true
+		end
 	end
+
+
+
 end
 
 function Truck:transform()

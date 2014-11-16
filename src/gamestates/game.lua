@@ -19,6 +19,7 @@ function state:enter()
 	spawn_timer = 3
 	gameover_timer = 3
 	Truck(0, 0)
+	Copter()
 	wave = 0
 	spawn_timer = 10
 	heli_timer = 20

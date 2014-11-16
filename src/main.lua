@@ -169,6 +169,7 @@ function love.load()
 	Car = require("gameobjects/Car")
 	Truck = require("gameobjects/Truck")
 	Copter = require("gameobjects/Copter")
+	Bomb = require("gameobjects/Bomb")
 	skyline_back.load()
 	skyline_front.load()
 
