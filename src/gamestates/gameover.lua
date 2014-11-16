@@ -8,7 +8,6 @@ function state:init()
 end
 
 function state:enter()
-
 end
 
 
@@ -24,17 +23,17 @@ function state:keypressed(key, uni)
   if key=="escape" then
     love.event.push("quit")
   elseif key==" " then
-    gamestate.switch(game)
+    gamestate.switch(title)
   end
 
 end
 
 
 function state:update(dt)
-
+	border.setColour(darkTeal) 
 	-- scrolling
-	skyline_back.update(dt*0.5)
-	skyline_front.update(dt*0.5)
+	skyline_back.update(dt)
+	skyline_front.update(dt)
 
 end
 
@@ -55,6 +54,16 @@ function state:draw()
 
 	-- foreground
 	skyline_front.draw()
+end
+
+function state:draw_overlay()
+ 	inScreenCanvas()
+ 	love.graphics.translate(W*0.5, H*0.5)
+ 	teal()
+ 		rekt(-56, -48, 112, 56)
+ 	shader(blackAndWhite)
+ 	love.graphics.setFont(bigFont)
+	love.graphics.printf("Game Over\n\nScore: " .. score, -96, -40, 192, "center")
 end
 
 

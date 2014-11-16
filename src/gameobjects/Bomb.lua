@@ -29,7 +29,11 @@ function Bomb:draw()
   local snap_x, snap_y = math.floor(x/8)*8, math.floor(y/8)*8
 
   inColourCanvas(2)
-  darkYellow()
+  if Bomb.BOOM > 0 then
+    yellow()
+  else
+    darkYellow()
+  end
   rekt(snap_x - 20, snap_y - 12, 40, 32)
 
   inAlphaCanvas(2)

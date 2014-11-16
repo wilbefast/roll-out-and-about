@@ -11,14 +11,14 @@ local skyline_front = {
 	
 	draw = function()
 
-
+		local y = 192 - h
 		inAlphaCanvas(2)
-			draw(img, snap_x, 192 - h)
-			draw(img, snap_x + w, 192 - h)
+			draw(img, snap_x, y)
+			draw(img, snap_x + w, y)
 
 		inColourCanvas(2)
 			darkViolet()
-			rekt(0, 192 - h*0.5, w, h)
+			rekt(0, y, w, h)
 	end,
 
 	update = function(dt)

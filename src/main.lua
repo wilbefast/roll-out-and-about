@@ -15,13 +15,13 @@ function red() love.graphics.setColor(255, 0, 0, 255) end
 function teal() love.graphics.setColor(0, 255, 255, 255) end
 function violet() love.graphics.setColor(255, 0, 255, 255) end
 function green() love.graphics.setColor(0, 255, 0, 255) end
-function darkYellow() love.graphics.setColor(192, 192, 0, 255) end
-function darkBlue() love.graphics.setColor(0, 0, 192, 255) end
-function darkRed() love.graphics.setColor(192, 0, 0, 255) end
-function darkTeal() love.graphics.setColor(0, 192, 192, 255) end
-function darkViolet() love.graphics.setColor(192, 0, 192, 255) end
-function darkGreen() love.graphics.setColor(0, 192, 0, 255) end
-function grey() love.graphics.setColor(192, 192, 192, 255) end
+function darkYellow() love.graphics.setColor(205, 205, 0, 255) end
+function darkBlue() love.graphics.setColor(0, 0, 205, 255) end
+function darkRed() love.graphics.setColor(205, 0, 0, 255) end
+function darkTeal() love.graphics.setColor(0, 205, 205, 255) end
+function darkViolet() love.graphics.setColor(205, 0, 205, 255) end
+function darkGreen() love.graphics.setColor(0, 205, 0, 255) end
+function grey() love.graphics.setColor(205, 205, 205, 255) end
 function reset()
 	white()
 	origin()
@@ -71,8 +71,10 @@ local screenScale = 1
 local palette
 
 -- font
-local font
-local blackAndWhite
+font = nil
+bigFont = nil
+hugeFont = nil
+blackAndWhite = nil
 
 -- gameplay
 function decimals(x) local n = 1 while x >= 10 do x = math.floor(x/10) n = n + 1 end return n end
@@ -143,10 +145,16 @@ function love.load()
 		love.graphics.newCanvas(w/8, h/8)
 	}
 
-	-- font
+	-- fonts
 	font = love.graphics.newFont("assets/transformers.ttf", 12)
 	font:setFilter("nearest", "nearest", 1)
+	bigFont = love.graphics.newFont("assets/transformers.ttf", 18)
+	bigFont:setFilter("nearest", "nearest", 1)
+	hugeFont = love.graphics.newFont("assets/transformers.ttf", 26)
+	hugeFont:setFilter("nearest", "nearest", 1)
 	love.graphics.setFont(font)
+
+
 	blackAndWhite = love.graphics.newShader("bw.fs")
 
 	-- sound
@@ -160,7 +168,7 @@ function love.load()
 	skyline_front.load()
 
   -- go to the initial gamestate
-  gamestate.switch(game)
+  gamestate.switch(title)
 
 end
 
@@ -195,13 +203,7 @@ function love.draw()
  	end
 
  	-- write score
- 	canvas(screenCanvas)
- 	love.graphics.translate((W - w)*0.5, (H - h)*0.5)
- 	teal()
- 		rekt(8, 8, 48 + 8*decimals(score), 12)
- 	shader(blackAndWhite)
-
- 		love.graphics.print("Score: " .. score, 10, 10)
+ 	gamestate.draw_overlay()
 
  	-- finalise
  	canvas(nil)

@@ -32,11 +32,12 @@ Callbacks
 
 function state:keypressed(key, uni)
   if key=="escape" then
-    love.event.push("quit")
+    gamestate.switch(title)
+  elseif (key==" ") and (gameover_timer < 3) then
+    gamestate.switch(gameover)
   end
 
 end
-
 
 function state:update(dt)
 
@@ -110,6 +111,15 @@ function state:draw()
 	skyline_front.draw()
 end
 
+function state:draw_overlay()
+ 	inScreenCanvas()
+ 	love.graphics.translate((W - w)*0.5, (H - h)*0.5)
+ 	teal()
+ 		rekt(8, 8, 48 + 8*decimals(score), 12)
+ 	shader(blackAndWhite)
+ 	love.graphics.setFont(font)
+	love.graphics.print("Score: " .. score, 10, 10)
+end
 
 --[[------------------------------------------------------------
 EXPORT
