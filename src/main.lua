@@ -160,6 +160,8 @@ function love.load()
 
 	-- sound
 	audio:load_sound("explode", 1, 1)
+	audio:load_music("transformers")
+	audio:play_music("transformers")
 
 	-- game objects
 	ExplodeParticle.load()
